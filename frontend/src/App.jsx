@@ -8,29 +8,75 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  function downloadJson() {
+    const blob = new Blob([JSON.stringify(result, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "scrape-result.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  const exampleUrls = [
+  "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+  "https://en.wikipedia.org/wiki/Artificial_intelligence",
+  "https://tailwindcss.com/docs/flexbox",
+  "https://react.dev/learn",
+  "https://vercel.com/blog",
+];
+
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 text-gray-800 p-6">
-      <div className="max-w-5xl mx-auto">
 
-        {/* HEADER */}
-        <header className="mb-12 text-center animate-fade-in">
+      <div className="max-w-6xl mx-auto">
+
+        {/* ---------- Sticky Header w/ Download Button ---------- */}
+        <header className="mb-12 text-center animate-fade-in relative">
+
+          {/* Sticky Download Button when result available */}
+          {result && (
+            <button
+              onClick={downloadJson}
+              className="hidden md:block absolute right-0 top-0
+                px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white 
+                rounded-lg shadow-lg transition transform hover:scale-105"
+            >
+              ⬇️ Download JSON
+            </button>
+          )}
+
           <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight drop-shadow-sm">
-            🌐 Lyftr.AI — Universal Web Scraper
+            Lyftr.AI — Universal Web Scraper
           </h1>
-          <p className="text-gray-600 mt-3 text-lg max-w-2xl mx-auto">
-            Scrape static & dynamic websites with metadata, sections, media extraction
-            and intelligent fallback handling — all in one interface.
+
+          <p className="text-gray-600 mt-3 text-lg max-w-2xl mx-auto leading-relaxed">
+            Scrape static & dynamic websites with intelligent fallback handling,
+            structured metadata, clean content sections & interaction tracking.
           </p>
         </header>
 
-        {/* FORM */}
+        {/* ---------- SCRAPE FORM ---------- */}
         <ScrapeForm
-          onStart={() => { setLoading(true); setError(null); setResult(null); }}
-          onResult={(data) => { setResult(data); setLoading(false); }}
-          onError={(e) => { setError(e); setLoading(false); }}
+          onStart={() => {
+            setLoading(true);
+            setError(null);
+            setResult(null);
+          }}
+          onResult={(data) => {
+            setResult(data);
+            setLoading(false);
+          }}
+          onError={(e) => {
+            setError(e);
+            setLoading(false);
+          }}
         />
 
-        {/* STATUS */}
+        {/* ---------- STATUS ---------- */}
         {loading && (
           <div className="mt-6 text-blue-600 animate-pulse font-medium text-center">
             Scraping the website… ⏳ please wait.
@@ -38,45 +84,38 @@ export default function App() {
         )}
 
         {error && (
-          <div className="mt-6 p-4 bg-red-100 border border-red-300 text-red-800 rounded-lg shadow text-center">
+          <div className="mt-6 p-4 bg-red-100 border border-red-300 
+              text-red-800 rounded-lg shadow text-center animate-fade-in">
             <strong>Error:</strong> {error}
           </div>
         )}
 
-        {/* RESULT */}
+        {/* ---------- RESULTS ---------- */}
         {result && (
-          <div className="animate-fade-in mt-10">
+          <div className="animate-fade-in mt-10 space-y-10">
 
-            {/* METADATA */}
+            {/* Metadata */}
             <JsonBlock title="Metadata" data={result.meta} />
 
-            {/* INTERACTIONS */}
+            {/* Interactions */}
             <JsonBlock title="Interactions" data={result.interactions} />
 
-            {/* SECTIONS */}
+            {/* Sections */}
             <SectionsList sections={result.sections} />
 
-            {/* SCRAPER ERRORS */}
+            {/* Scraper Errors */}
             {result.errors?.length > 0 && (
               <JsonBlock title="Scraper Errors" data={result.errors} />
             )}
 
-            {/* DOWNLOAD JSON */}
-            <div className="text-center">
+            {/* Mobile Download Button */}
+            <div className="text-center md:hidden">
               <button
-                className="mt-10 px-6 py-3 bg-blue-600 hover:bg-blue-700 
+                onClick={downloadJson}
+                className="mt-6 px-6 py-3 bg-blue-600 hover:bg-blue-700 
                 text-white rounded-xl shadow-lg transition transform hover:scale-105"
-                onClick={() => {
-                  const blob = new Blob([JSON.stringify(result, null, 2)], { type: "application/json" });
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement("a");
-                  a.href = url;
-                  a.download = "scrape-result.json";
-                  a.click();
-                  URL.revokeObjectURL(url);
-                }}
               >
-                ⬇️ Download Full JSON
+                ⬇️ Download JSON
               </button>
             </div>
           </div>

@@ -121,7 +121,7 @@ function SectionDetail({ sec }) {
       {/* JSON VIEWER */}
       <div>
         <button
-          className="text-sm font-medium text-gray-700 flex items-center gap-1 hover:underline cursor-pointer"
+          className="text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center gap-1 hover:underline cursor-pointer"
           onClick={() => setOpenJson(!openJson)}
         >
           {openJson ? "▼" : "▶"} View Raw JSON
