@@ -8,26 +8,16 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  function downloadJson() {
-    const blob = new Blob([JSON.stringify(result, null, 2)], {
-      type: "application/json",
-    });
+  const downloadJson = () => {
+    if (!result) return;
+    const blob = new Blob([JSON.stringify(result, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = "scrape-result.json";
     a.click();
     URL.revokeObjectURL(url);
-  }
-
-  const exampleUrls = [
-  "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
-  "https://en.wikipedia.org/wiki/Artificial_intelligence",
-  "https://tailwindcss.com/docs/flexbox",
-  "https://react.dev/learn",
-  "https://vercel.com/blog",
-];
-
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 text-gray-800 p-6">
@@ -36,18 +26,6 @@ export default function App() {
 
         {/* ---------- Sticky Header w/ Download Button ---------- */}
         <header className="mb-12 text-center animate-fade-in relative">
-
-          {/* Sticky Download Button when result available */}
-          {result && (
-            <button
-              onClick={downloadJson}
-              className="hidden md:block absolute right-0 top-0
-                px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white 
-                rounded-lg shadow-lg transition transform hover:scale-105"
-            >
-              ⬇️ Download JSON
-            </button>
-          )}
 
           <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight drop-shadow-sm">
             Lyftr.AI — Universal Web Scraper
@@ -74,6 +52,8 @@ export default function App() {
             setError(e);
             setLoading(false);
           }}
+          result={result}
+          onDownload={downloadJson} 
         />
 
         {/* ---------- STATUS ---------- */}
@@ -108,7 +88,7 @@ export default function App() {
               <JsonBlock title="Scraper Errors" data={result.errors} />
             )}
 
-            {/* Mobile Download Button */}
+            {/* Mobile Download Button
             <div className="text-center md:hidden">
               <button
                 onClick={downloadJson}
@@ -117,7 +97,7 @@ export default function App() {
               >
                 ⬇️ Download JSON
               </button>
-            </div>
+            </div> */}
           </div>
         )}
       </div>
