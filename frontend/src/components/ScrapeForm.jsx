@@ -8,9 +8,9 @@ export default function ScrapeForm({ onStart, onResult, onError, result, onDownl
   const exampleUrls = [
     "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
     "https://en.wikipedia.org/wiki/Artificial_intelligence",
-    "https://infinite-scroll.com/demo/full-page/",
     "https://nextjs.org/docs",
     "https://vercel.com/",
+    "https://news.ycombinator.com/",
   ];
 
   async function handleSubmit(e) {
